@@ -1,0 +1,28 @@
+
+
+{% extends "base.html" %}
+
+{% block app_content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<div class="card mb-4">
+  <div class="row g-0">
+    <div class="col-md-5">
+      <img  src="../static/img/product/{{product.id}}.jpg" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-7">
+      <div class="card-body">
+        <h5 class="card-title">{{product.name}}</h5>
+        <p class="listing-tag">{{ product.category.name }}</p>
+        <p class="listing-tag">${{ product.price }}</p>
+        <p class="card-text">{{product.description}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-2 mx-auto ">
+  <a class="btn btn-secondary btn-lg" role="button" >Back</a>
+  <a class="btn btn-primary btn-lg " role="button" >Buy</a>
+</div>
+{% endblock %}

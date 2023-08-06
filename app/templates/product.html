@@ -1,0 +1,123 @@
+{% extends 'layout.html' %}
+  
+{% block body %}
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Manage Product</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{{url_for('admin_panel')}}">AdminPanel</a></li>
+              <li class="breadcrumb-item active">Manage Product</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+ 
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+            <h3>Product Listing</h3>
+            <br>
+            <div class="float-right mb-2 col-md-2">
+                <button type="button" id="addProduct" class="btn btn-info" title="add Product"><span class="glyphicon glyphicon-plus">Add Product</span></button>
+            </div>
+            <br><br>            
+            <table id="admin_table" class="table table-striped">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Date</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>
+                            <img src="../static/img/product/{{product.id}}.jpg" width="80" height="90">
+                        </td>
+                        <td>{{product.name}}</td>
+                        <td>{{product.category.name}}</td>
+                        <td>{{product.description}}</td>
+                        <td>{{product.quantity}}</td>
+                        <td>{{product.price}}</td>
+                        <td>{{product.date.date()}}</td>
+                        <td><a href="{{url_for('edit_product', product_id=product.id)}}" class="btn btn-primary">Edit</a></td>
+                        <td><a href="{{url_for('delete_product', product_id=product.id)}}" class="btn btn-danger btn-delete">Delete</a></td>
+                    </tr> 
+              {% endfor %}    
+              </tbody>
+          </table>    
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    <div class="modal fade" id="productModal">
+        <div class="modal-dialog">
+            <form method="post" id="productForm" action="/admin/save_product" enctype="multipart/form-data">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title">Add New Product</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">                          
+                        <label class="control-label">Name</label>
+                        <input type="text" name="name" id="name" autocomplete="off" class="form-control" placeholder="Product Name" value="{{request.form['name']}}"
+                               pattern=".{0,120}" title="Maximum 120 characters" required/>
+                    </div>
+                    <div class="form-group">
+                            <label class="control-label">Category</label>
+                            <select name="category_select" class="selectpicker form-control">
+                              {% for category_ in category %}
+                              <option value="{{ category_.id }}">{{ category_.name }}</option>
+                              {% endfor %}
+                            </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Description</label>
+                        <input type="text" name="description" id="description" autocomplete="off" class="form-control" placeholder="Description" value="{{request.form['description']}}"
+                               pattern=".{0,500}" title="Maximum 500 characters" required/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Quantity</label>
+                        <input type="number" name="quantity" id="quantity" autocomplete="off" class="form-control" placeholder="Quantity" value="{{request.form['quantity']}}" required min="0" step="1"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Price</label>
+                        <input type="text" name="price" id="price" autocomplete="off" class="form-control" placeholder="Price" value="{{request.form['price']}}"
+                               pattern="[0-9]+(\.[0-9]{0,2}){0,1}"  title="Maximum of two characters after the period" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Image Upload</label>
+                        <input type="file" name="uploadFile" accept=".jpg, .png" required/>
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <input type="hidden" name="action" id="action" value="" />
+                    <input type="submit" name="save" id="save" class="btn btn-primary" value="{{request.form['submit']}}" />
+                </div>
+            </div>
+            </form>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+{% endblock %}

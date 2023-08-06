@@ -1,0 +1,13 @@
+
+<div class="card w-25" >
+  <a href="{{ url_for('product_info', product_id=product.id) }}">
+    <div class="price p-1">${{ product.price }}</div>
+    <img src="../static/img/product/{{product.id}}.jpg" class="card-img-top" alt="..." style="height: 150px; width:auto">
+    <div class="card-body">
+      <p class="card-text"> {{ product.name }}</p>
+    </div>
+  </a>
+    <div class="card-footer">
+      <small class="text-muted">{{product.quantity}} pieces are available</small>
+    </div>
+</div>

@@ -1,0 +1,102 @@
+{% extends 'layout.html' %}
+  
+{% block body %}
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Manage Category</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{{url_for('admin_panel')}}">AdminPanel</a></li>
+              <li class="breadcrumb-item active">Manage Category</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+ 
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+            <h3>Category Listing</h3>
+            <br>
+            <div class="float-right mb-2 col-md-2">
+                <button type="button" id="addCategory" class="btn btn-info" title="add Category"><span class="glyphicon glyphicon-plus">Add Category</span></button>
+            </div>
+            <br><br>            
+            <table id="admin_table" class="table table-striped">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Product Count</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for category_ in category %}
+                    <tr>
+                        <td>
+                            <img src="../static/img/category/{{category_.id}}.jpg" width="80" height="90">
+                        </td>
+                        <td>{{category_.name}}</td>
+                        <td>{{category_.date.date()}}</td>
+                        <td>{{category_.products.count()}}</td>
+                        <td><a href="{{url_for('edit_category', category_id=category_.id)}}" class="btn btn-primary">Edit</a></td>
+                        <td><a href="{{url_for('delete_category', category_id=category_.id)}}" class="btn btn-danger btn-delete">Delete</a></td>
+                    </tr> 
+              {% endfor %}    
+              </tbody>
+          </table>    
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    <div class="modal fade" id="categoryModal">
+        <div class="modal-dialog">
+            <form method="post" id="categoryForm" action="/admin/save_category" enctype="multipart/form-data">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title">Add New Category</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">                          
+                        <label class="control-label">Name</label>
+
+                        <input type="text" name="name" id="name" autocomplete="off" class="form-control" placeholder="Category name" value="{{request.form['name']}}"
+                               pattern=".{0,120}" title="Maximum 120 characters" required/>
+                                         
+                    </div>
+<!--                    <div class="form-group">                          -->
+<!--                        <label class="control-label">ISBN No</label>                         -->
+<!--                        <input type="text" name="isbn" id="isbn" autocomplete="off" class="form-control" placeholder="isbn name"/>        -->
+<!--                    </div>-->
+                    <div class="form-group">
+                        <label>Image Upload</label>
+<!--                        value="{{request.form['img']}}"-->
+                        <input type="file" name="uploadFile" accept=".jpg, .png" required/>
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <input type="hidden" name="action" id="action" value="" />
+                    <input type="submit" name="save" id="save" class="btn btn-primary" value="{{request.form['submit']}}" />
+                </div>
+            </div>
+            </form>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+{% endblock %}

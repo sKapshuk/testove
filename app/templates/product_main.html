@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <div id="filters" >
+        <div class="col-7">
+            <label class="font-weight-bold mr-2">Filters:</label>
+            <form action="" method="post" enctype="multipart/form-data">
+                <span>
+                        <label class="control-label">Price min</label>
+                        <input type="text" name="price_min" id="price_min" autocomplete="off" placeholder="Min"
+                                    pattern="[0-9]+(\.[0-9]{0,2}){0,1}"  title="Maximum of two characters after the period"/>
+
+                </span>
+
+                <span>
+                        <label class="control-label">Price max</label>
+                        <input type="text" name="price_max" id="price_max" autocomplete="off" placeholder="Max"
+                                    pattern="[0-9]+(\.[0-9]{0,2}){0,1}"  title="Maximum of two characters after the period"/>
+                </span>
+
+                <span>
+                        <input type="submit" name="save" id="save" class="btn btn-info" value="Submit" />
+                </span>
+
+            </form>
+        </div>
+
+        <div class="col-3">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{{url_for('category')}}">{{category.name}}</a></li>
+              <li class="breadcrumb-item active"><a href="">Products</a></li>
+            </ol>
+        </div>
+    </div>
+    <br>
+    {% include "product_listings.html" %}
+{% endblock %}

@@ -1,0 +1,11 @@
+<div class="card mb-3 w-20">
+  <a class="listing-a" href="{{ url_for('products', category_id=category_.id) }}">
+    <img src="../static/img/category/{{category_.id}}.jpg" class="card-img-top" alt="..." style="height: auto; width:auto">
+    <div class="card-body">
+      <h5 class="card-text">{{ category_.name }}</h5>
+    </div>
+  </a>
+    <div class="card-footer">
+      <small class="text-muted">Number of products: {{category_.products.count()}}</small>
+    </div>
+</div>
