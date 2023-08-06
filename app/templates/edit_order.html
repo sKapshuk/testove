@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+  
+{% block body %}
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Manage Orders</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{{url_for('admin_panel')}}">AdminPanel</a></li>
+              <li class="breadcrumb-item active">Manage Orders</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+ 
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+            <h3>Order Edit</h3>
+
+            <form method="post" id="orderForm" action="{{url_for('save_order')}}">
+                <div class="card-body">
+                        <div class="form-group">
+                            <label class="control-label">Address</label>
+                            <input type="text" name="address" id="address" autocomplete="off" class="form-control" placeholder="Product Name" value="{{order.address.name}}"
+                                    pattern=".{0,120}" title="Maximum 120 characters" required/>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Status</label>
+                            <select name="status_select" class="selectpicker form-control">
+                              {% for status_ in status %}
+                                    {% if status_ == order.status %}
+                                        <option value="{{ status_ }}" selected="selected">{{ status_ }}</option>
+                                    {% else %}
+                                        <option value="{{ status_ }}">{{ status_ }}</option>
+                                    {% endif %}
+                              {% endfor %}
+                            </select>
+                        </div>
+
+                        <input type="hidden" name="orderid" id="orderid" value="{{order.id}}" />
+                        <input type="submit" name="save" id="save" class="btn btn-info" value="Save"/>
+                </div>
+            </form>
+            </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}

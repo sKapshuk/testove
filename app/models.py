@@ -44,17 +44,19 @@ order_product = db.Table("order_product",
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key =True)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_start = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_edit = db.Column(db.DateTime, nullable=True)
+    date_end = db.Column(db.DateTime, nullable=True)
+    status = db.Column(db.String(120), nullable=False, default="Processing in progress")
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     address_id = db.Column(db.Integer, db.ForeignKey("address.id"))
     products = db.relationship("Product", secondary=order_product, backref="orders")
 
-
     def __repr__(self):
-        return "<Order {date}: {user_id} - {products} - {address}>".format(date=self.date,
-                                                                           user_id=self.user.id,
+        return "<Order {date}: {user_id} - {products} - {address}>".format(date=self.date_start,
+                                                                           user_id=self.user_id,
                                                                            products=[product.id for product in self.products],
-                                                                           address=self.address)
+                                                                           address=self.address_id)
 
 class Address(db.Model):
     id = db.Column(db.Integer, primary_key=True)

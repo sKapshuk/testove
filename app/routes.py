@@ -8,6 +8,8 @@ from functools import partial, wraps
 
 import os
 
+ORDER_STATUS = ["Shipped", "Processing in progress", "Delivered", "Canceled"]
+
 @app.route("/")
 @app.route("/category")
 def category():
@@ -15,10 +17,31 @@ def category():
 
     return render_template("category_main.html", category=category, title="Category List")
 
+
+@app.route("/buy/<int:product_id>", methods=["GET", "POST"])
+@login_required
+def product_buy(product_id):
+    address = Address(name=request.form["address"])
+    db.session.add(address)
+    db.session.flush()
+
+    product = Product.query.filter_by(id=product_id).first()
+    product.quantity -= 1
+
+    order = Order(user_id=current_user.id, address_id=address.id, products=[product], status="Processing in progress")
+
+    db.session.add(order)
+    db.session.commit()
+
+    flash("Order successfully completed !!")
+    return redirect(url_for('product_info', product_id=product_id))
+
 @app.route("/product/<int:category_id>", methods=["GET", "POST"])
 def products(category_id):
     category = Category.query.filter_by(id=category_id).first()
     products = category.products
+
+    products = [product for product in products if product.quantity > 0]
 
     if ("price_min" in request.form) and (request.form["price_min"]):
         products = [product for product in products if product.price >= float(request.form["price_min"])]
@@ -53,6 +76,7 @@ def login():
         if (not next_page) or (urlparse(next_page).netloc != ""):
             next_page = url_for("category")
 
+        print("next_page - - - ", next_page)
         return redirect(next_page)
 
     return render_template("login.html", title="Sign In", form=form)
@@ -92,7 +116,6 @@ def restricted_entry(f, *, list_role=["Admin"]):
         else:
             return redirect(url_for("category"))
     return inner
-
 
 @app.route("/admin")
 @restricted_entry
@@ -246,3 +269,46 @@ def save_product():
     flash(message=f'The product was successfully {function} !!', category='message')
 
     return redirect(url_for("admin_product"))
+
+@app.route("/admin/orders")
+@restricted_entry
+def admin_order():
+    orders = Order.query.all()
+    return render_template("order.html", orders=orders)
+
+@app.route("/admin/edit_order/<int:order_id>", methods=["GET", "POST"])
+@restricted_entry
+def edit_order(order_id):
+    order = Order.query.filter_by(id=order_id).first()
+
+    return render_template("edit_order.html", order=order, status=ORDER_STATUS)
+
+@app.route("/admin/save_order", methods=["POST"])
+@restricted_entry
+def save_order():
+    order = Order.query.filter_by(id=request.form["orderid"]).first()
+    if order.address.name != request.form["address"]:
+        address = Address(name=request.form["address"])
+        order.address = address
+
+        if address is None:
+            db.session.add(address)
+
+    order.date_edit = datetime.utcnow()
+
+    if order.status != request.form.get('status_select'):
+        if order.status not in ["Delivered", "Canceled"]:
+            order.status = request.form.get('status_select')
+
+            if order.status in ["Delivered", "Canceled"]:
+                order.date_end = datetime.utcnow()
+
+                if order.status == "Canceled":
+                    order.products[0].quantity += 1
+        else:
+            flash(message='"Delivered", "Canceled" statuses are final, they cannot be changed', category='warning')
+
+    db.session.commit()
+
+    flash(message=f'The order was successfully edited !!', category='message')
+    return redirect(url_for("admin_order"))

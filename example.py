@@ -1,3 +1,6 @@
+import os
+from app import app
+
 class Config:
     SECRET_KEY = "test-secret"
 

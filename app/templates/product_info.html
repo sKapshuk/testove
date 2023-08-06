@@ -3,26 +3,73 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-<div class="card mb-4">
-  <div class="row g-0">
-    <div class="col-md-5">
-      <img  src="../static/img/product/{{product.id}}.jpg" class="img-fluid rounded-start" alt="...">
-    </div>
-    <div class="col-md-7">
-      <div class="card-body">
-        <h5 class="card-title">{{product.name}}</h5>
-        <p class="listing-tag">{{ product.category.name }}</p>
-        <p class="listing-tag">${{ product.price }}</p>
-        <p class="card-text">{{product.description}}</p>
+  <div class="card mb-4">
+    <div class="row g-0">
+      <div class="col-md-5">
+        <img  src="../static/img/product/{{product.id}}.jpg" class="img-fluid rounded-start" alt="...">
+      </div>
+      <div class="col-md-7">
+        <div class="card-body">
+          <h5 class="card-title">{{product.name}}</h5>
+          <p class="listing-tag">{{ product.category.name }}</p>
+          <p class="listing-tag">${{ product.price }}</p>
+          <p class="card-text">{{product.description}}</p>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="col-2 mx-auto ">
-  <a class="btn btn-secondary btn-lg" role="button" >Back</a>
-  <a class="btn btn-primary btn-lg " role="button" >Buy</a>
-</div>
+  <div class="col-2 mx-auto ">
+    <a href="{{url_for('products', category_id=product.category.id)}}"  class="btn btn-secondary btn-lg" role="button" >Back</a>
+    <a id="addAddress" class="btn btn-primary btn-lg " role="button" >Buy</a>
+  </div>
+
+  <div class="modal fade" id="addressModal">
+      <div class="modal-dialog">
+          <form method="post" id="addressForm" action="{{url_for('product_buy', product_id=product.id)}}">
+          <div class="modal-content">
+              <div class="modal-header">
+              <h4 class="modal-title">Delivery Address</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+              </button>
+              </div>
+              <div class="modal-body">
+                  <div class="form-group">
+                      <label class="control-label">Delivery Address</label>
+
+                      <input type="text" name="address" id="address" autocomplete="off" class="form-control" placeholder="Address"
+                                pattern=".{0,120}" title="Maximum 120 characters" required/>
+                  </div>
+              </div>
+
+              <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <input type="submit" name="save" id="save" class="btn btn-primary" />
+              </div>
+          </div>
+          </form>
+      </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  $(document).ready(function(){
+      $('#addAddress').click(function(){
+        $('#addressModal').modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+        $("#addressModal").on("shown.bs.modal", function () {
+          $('#addressForm')[0].reset();
+          $('.modal-title').html("<i class='fa fa-plus'></i> Add Address");
+          $('#action').val('addAddress');
+          $('#save').val('Save');
+        });
+      });
+    });
+</script>
 {% endblock %}
